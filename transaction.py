@@ -13,9 +13,9 @@ class Transaction:
         pass
 
 
-class GetTx(Transaction):
+class GetInfoTx(Transaction):
     def __init__(self, maker, subject):
-        super(GetTx, self).__init__(maker)
+        super(GetInfoTx, self).__init__(maker)
         self.subject = subject
 
         # todo : get
