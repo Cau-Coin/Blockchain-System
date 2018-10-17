@@ -22,7 +22,7 @@ class Block:
             "this_hash:": self.this_hash
         }
 
-        return json.loads(json_data)
+        return json.dumps(json_data)
 
 
 def hash_block(index, timestamp, transactions, prev_hash, constructor):
@@ -33,9 +33,7 @@ def hash_block(index, timestamp, transactions, prev_hash, constructor):
     return sha.hexdigest()
 
 
-def to_block(json_data):
-    data = json.dumps(json_data)
-
+def to_block(data):
     index = data["index"]
     timestamp = data["timestamp"]
     transactions = data["transactions"]

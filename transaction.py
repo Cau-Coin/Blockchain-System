@@ -39,11 +39,11 @@ class EvaluateTx(Transaction):
             "review": self.review
         }
 
-        return json.loads(json_data)
+        return json.dumps(json_data)
 
 
 def to_evaluate_tx(json_data):
-    data = json.dumps(json_data)
+    data = json.loads(json_data)
 
     tx_id = data["tx_id"]
     tx_maker = data["tx_maker"]
@@ -61,8 +61,8 @@ def to_evaluate_tx(json_data):
 
 
 def new_evaluate_tx(tx_maker, timestamp, dept, grade, semester, subject, takeyear, score, review):
-    tx_id = uuid.uuid4()
-    evaluate_id = uuid.uuid4()
+    tx_id = str(uuid.uuid4())
+    evaluate_id = str(uuid.uuid4())
 
     return EvaluateTx(tx_id, tx_maker, timestamp, evaluate_id, dept, grade, semester, subject, takeyear, score, review)
 
@@ -83,11 +83,11 @@ class CommentTx(Transaction):
             "comment": self.comment,
         }
 
-        return json.loads(json_data)
+        return json.dumps(json_data)
 
 
 def to_comment_tx(json_data):
-    data = json.dumps(json_data)
+    data = json.loads(json_data)
 
     tx_id = data["tx_id"]
     tx_maker = data["tx_maker"]
@@ -99,7 +99,7 @@ def to_comment_tx(json_data):
 
 
 def new_comment_tx(tx_maker, timestamp, evaluate_id, comment):
-    tx_id = uuid.uuid4()
+    tx_id = str(uuid.uuid4())
 
     return CommentTx(tx_id, tx_maker, timestamp, evaluate_id, comment)
 
@@ -120,11 +120,11 @@ class ScoreTx(Transaction):
             "score": self.score
         }
 
-        return json.loads(json_data)
+        return json.dumps(json_data)
 
 
 def to_score_tx(json_data):
-    data = json.dumps(json_data)
+    data = json.loads(json_data)
 
     tx_id = data["tx_id"]
     tx_maker = data["tx_maker"]
@@ -136,7 +136,7 @@ def to_score_tx(json_data):
 
 
 def new_score_tx(tx_maker, timestamp, evaluate_id, score):
-    tx_id = uuid.uuid4()
+    tx_id = str(uuid.uuid4())
 
     return ScoreTx(tx_id, tx_maker, timestamp, evaluate_id, score)
 
@@ -151,7 +151,7 @@ def new_transaction(json_data):
         semester = json_data["semester"]
         subject = json_data["subject"]
         takeyear = json_data["takeyear"]
-        score = json_data["score"]
+        score = json_data["evaluate"]
         review = json_data["review"]
         timestamp = json_data["timestamp"]
 
@@ -163,15 +163,15 @@ def new_transaction(json_data):
         comment = json_data["comment"]
         timestamp = json_data["timestamp"]
 
-        return new_comment_tx(tx_maker, evaluate_id, comment, timestamp)
+        return new_comment_tx(tx_maker, timestamp, evaluate_id, comment)
 
     elif tx_type == "score":
-        tx_maker = json_data["tx_maker"]
+        tx_maker = json_data["userid"]
         evaluate_id = json_data["evaluateid"]
         score = json_data["score"]
         timestamp = json_data["timestamp"]
 
-        return new_score_tx(tx_maker, evaluate_id, score, timestamp)
+        return new_score_tx(tx_maker, timestamp, evaluate_id, score)
 
     else:
         print("[Error] Not defined json type!")
