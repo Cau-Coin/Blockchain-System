@@ -40,14 +40,28 @@ class Blockchain:
         state = self.state
 
         for tx in block.transactions:
-            if type(tx) == "":
-                state.update()
-            elif type(tx) == "":
-                state.update()
-            elif type(tx) == "":
-                state.update()
+            if type(tx) == type(EvaluateTx):
+                json_data = tx.to_json
+                json.dumps(json_data)
+                json_data.push({
+                    "comments": [],
+                    "scores": []
+                })
+                state.insert(json_data)
+            elif type(tx) == type(CommentTx):
+                evaluate_id = tx.evaluate_id
+                comment = tx.comment
+                state.update(
+                    {"evaluate_id": evaluate_id},
+                    {"comments.$push": {"comment": comment}}
+                )
+            elif type(tx) == type(ScoreTx):
+                evaluate_id = tx.evaluate_id
+                score = tx.score
+                state.update(
+                    {"evaluate_id": evaluate_id},
+                    {"scores.$push": {"score": score}}
+                )
             else:
                 print("[Error] Not defined transaction!")
                 return
-
-        self.state = state
