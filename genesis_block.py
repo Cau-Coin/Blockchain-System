@@ -6,4 +6,4 @@ from block import Block
 def create_genesis_block():
     # todo : how first transaction?
     # todo : is a value of constructor IP?
-    return Block(0, date.datetime.now(), "Genesis Block", "0", "myIP")
+    return Block("0", str(date.datetime.now()), "Genesis Block", "0", "myIP")
