@@ -10,8 +10,8 @@ class Blockchain:
         self.my_ip = ip
 
         # mongo db connection
-        self.conn = pymongo.MongoClient(ip, port)
-        self.db = self.conn.get_database(db)
+        self.client = pymongo.MongoClient(ip, port)
+        self.db = self.client.get_database(db)
 
         # block db
         self.chain = self.db.get_collection(chain_col)
@@ -37,8 +37,6 @@ class Blockchain:
         self.update_state(block)
 
     def update_state(self, block):
-        state = self.state
-
         for tx in block.transactions:
             if type(tx) == type(EvaluateTx):
                 json_data = tx.to_json
@@ -47,20 +45,28 @@ class Blockchain:
                     "comments": [],
                     "scores": []
                 })
-                state.insert(json_data)
+                self.state.insert(json_data)
             elif type(tx) == type(CommentTx):
+                user_id = tx.tx_maker
                 evaluate_id = tx.evaluate_id
                 comment = tx.comment
-                state.update(
+                self.state.update(
                     {"evaluate_id": evaluate_id},
-                    {"comments.$push": {"comment": comment}}
+                    {"comments.$push": {
+                        "user_id": user_id,
+                        "comment": comment
+                    }}
                 )
             elif type(tx) == type(ScoreTx):
+                user_id = tx.tx_maker
                 evaluate_id = tx.evaluate_id
                 score = tx.score
-                state.update(
+                self.state.update(
                     {"evaluate_id": evaluate_id},
-                    {"scores.$push": {"score": score}}
+                    {"scores.$push": {
+                        "user_id": user_id,
+                        "score": score
+                    }}
                 )
             else:
                 print("[Error] Not defined transaction!")
