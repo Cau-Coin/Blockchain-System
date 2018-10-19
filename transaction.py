@@ -4,16 +4,17 @@ import uuid
 
 
 class Transaction:
-    def __init__(self, tx_id, tx_maker, timestamp):
+    def __init__(self, tx_id, tx_maker, timestamp, tx_type):
         self.tx_id = tx_id
         self.tx_maker = tx_maker
         self.timestamp = timestamp
+        self.tx_type = tx_type
 
 
 class EvaluateTx(Transaction):
     def __init__(self, tx_id, tx_maker, timestamp, evaluate_id, dept, grade, semester, subject, takeyear, score,
                  review):
-        super(EvaluateTx, self).__init__(tx_id, tx_maker, timestamp)
+        super(EvaluateTx, self).__init__(tx_id, tx_maker, timestamp, "evaluate")
 
         self.evaluate_id = evaluate_id
         self.dept = dept
@@ -69,7 +70,7 @@ def new_evaluate_tx(tx_maker, timestamp, dept, grade, semester, subject, takeyea
 
 class CommentTx(Transaction):
     def __init__(self, tx_id, tx_maker, timestamp, evaluate_id, comment):
-        super(CommentTx, self).__init__(tx_id, tx_maker, timestamp)
+        super(CommentTx, self).__init__(tx_id, tx_maker, timestamp, "comment")
 
         self.evaluate_id = evaluate_id
         self.comment = comment
@@ -106,7 +107,7 @@ def new_comment_tx(tx_maker, timestamp, evaluate_id, comment):
 
 class ScoreTx(Transaction):
     def __init__(self, tx_id, tx_maker, timestamp, evaluate_id, score):
-        super(ScoreTx, self).__init__(tx_id, tx_maker, timestamp)
+        super(ScoreTx, self).__init__(tx_id, tx_maker, timestamp, "score")
 
         self.evaluate_id = evaluate_id
         self.score = score

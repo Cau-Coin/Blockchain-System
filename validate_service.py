@@ -9,11 +9,11 @@ def check_duplicated_eval(state_db, tx):
     # 4. 포함되지 않으면 return true, 포함되면 return false
     # (true 면 저장)
 
-    result = state_db.find_one({
+    result = state_db.find({
         "tx_maker": tx.tx_maker, "subject": tx.subject
-    })
+    }).count()
 
-    if len(result) == 0:
+    if result == 0:
         return True
     else:
         return False
@@ -26,12 +26,12 @@ def check_duplicated_score(state_db, tx):
     # 4. 포함되지 않으면 return true, 포함되면 return false
     # (true 면 저장)
 
-    result = state_db.find_one({
+    result = state_db.find({
         "scores": {"user_id": tx.tx_maker},
         "evaluate_id": tx.evaluate_id
-    })
+    }).count()
 
-    if len(result) == 0:
+    if result == 0:
         return True
     else:
         return False
