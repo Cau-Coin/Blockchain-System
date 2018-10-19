@@ -1,21 +1,15 @@
 import requests
-from flask import request, Blueprint
+from flask import request
 
 from block import *
 from transaction import new_transaction
 
-leader_adapter = Blueprint('leader_adapter', __name__)
 
-
-@leader_adapter.route("/transaction", methods=["POST"])
-def receive_tx_msg():
+def receive_tx_msg(json_data):
     # http로 tx 받음
-    if request.method == "POST":
-        tx_json = new_transaction(request.json).to_json()
-        print(tx_json)
-        return tx_json
-    else:
-        print("[Error] Not defined request method!")
+    tx = new_transaction(json_data)
+    print(tx)
+    return tx
 
 
 def propose_block(last_block, tx_list, my_address):
