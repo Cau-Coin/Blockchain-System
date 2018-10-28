@@ -49,8 +49,8 @@ class Blockchain:
         self.update_state(block)
 
     def update_state(self, block):
-        for tx in block.transactions:
-            if tx["tx_type"] == "evaluate":
+        for tx in block["transactions"]:
+            if tx["type"] == "evaluate":
                 data = {
                     "evaluate_id": tx["evaluate_id"],
                     "user_id": tx["user_id"],
@@ -70,20 +70,28 @@ class Blockchain:
             elif tx["type"] == "comment":
                 self.state.update(
                     {"evaluate_id": tx["evaluate_id"]},
-                    {"comments.$push": {
-                        "user_id": tx["user_id"],
-                        "comment": tx["comment"],
-                        "timestamp": tx["timestamp"]
-                    }}
+                    {
+                        "$addToSet": {
+                            "comments": {
+                                "user_id": tx["user_id"],
+                                "comment": tx["comment"],
+                                "timestamp": tx["timestamp"]
+                            }
+                        }
+                    }
                 )
             elif tx["type"] == "score":
                 self.state.update(
                     {"evaluate_id": tx["evaluate_id"]},
-                    {"scores.$push": {
-                        "user_id": tx["user_id"],
-                        "score": tx["comment"],
-                        "timestamp": tx["timestamp"]
-                    }}
+                    {
+                        "$addToSet": {
+                            "scores": {
+                                "user_id": tx["user_id"],
+                                "score": tx["comment"],
+                                "timestamp": tx["timestamp"]
+                            }
+                        }
+                    }
                 )
             else:
                 print("[Error] Not defined transaction!")

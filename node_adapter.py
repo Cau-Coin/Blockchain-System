@@ -14,8 +14,7 @@ def send_tx_msg(tx, ip):
     requests.post(url=dst, json=tx_json)
 
 
-def accept_block(json_block):
-    block = json_to_block(json_block)
+def accept_block(block):
     print("Accept block - ", block)
     return block
 
