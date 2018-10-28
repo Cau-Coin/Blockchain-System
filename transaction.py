@@ -70,3 +70,7 @@ def create_score_tx(tx_maker, timestamp, evaluate_id, score):
 
 def tx_to_json(tx):
     return json.dumps(tx)
+
+
+def json_to_tx(json_tx):
+    return json.loads(json_tx)

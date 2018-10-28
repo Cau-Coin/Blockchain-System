@@ -20,6 +20,10 @@ def block_to_json(block):
     return json.dumps(block)
 
 
+def json_to_block(json_block):
+    return json.loads(json_block)
+
+
 def hash_block(index, timestamp, transactions, prev_hash, constructor):
     sha = hashlib.sha256()
     tx_hash_data = ""
