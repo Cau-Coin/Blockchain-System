@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 from flask import Flask
 
-from blockchain_manager import http_handler
+from blockchain_manager.http_handler import http_handler
 
 if __name__ == "__main__":
     app = Flask(__name__)

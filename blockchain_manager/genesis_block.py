@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime as date
 
 from blockchain_manager.block import hash_block, new_block

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hashlib
 import datetime as date
 import json

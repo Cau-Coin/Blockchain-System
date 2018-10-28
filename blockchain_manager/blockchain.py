@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pymongo
 
 from blockchain_manager.genesis_block import create_genesis_block

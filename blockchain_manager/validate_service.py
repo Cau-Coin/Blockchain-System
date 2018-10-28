@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def validate_tx(state_db, tx):
     return check_duplicated_eval(state_db, tx) and check_duplicated_score(state_db, tx)
 

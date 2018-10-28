@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import random
 
 node_list = ["115.68.207.11"]
