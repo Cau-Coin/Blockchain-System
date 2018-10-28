@@ -83,14 +83,14 @@ def create_tx(my_ip, json_input):
     data_input = json_input
 
     if data_input["type"] == "evaluate":
-        return create_evaluate_tx(my_ip, data_input["timestamp"], data_input["userid"], data_input["dept"],
+        return create_evaluate_tx(my_ip, data_input["timestamp"], data_input["user_id"], data_input["dept"],
                                   data_input["grade"], data_input["semester"], data_input["subject"],
                                   data_input["takeyear"], data_input["evaluate"], data_input["review"])
     elif data_input["type"] == "comment":
-        return create_comment_tx(my_ip, data_input["timestamp"], data_input["evaluateid"], data_input["userid"],
+        return create_comment_tx(my_ip, data_input["timestamp"], data_input["evaluate_id"], data_input["user_id"],
                                  data_input["comment"])
     elif data_input["type"] == "score":
-        return create_score_tx(my_ip, data_input["timestamp"], data_input["evaluateid"], data_input["userid"],
+        return create_score_tx(my_ip, data_input["timestamp"], data_input["evaluate_id"], data_input["user_id"],
                                data_input["score"])
     else:
         print("Create tx is failed! - tx_type mismatched")
