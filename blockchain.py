@@ -87,7 +87,7 @@ class Blockchain:
                         "$addToSet": {
                             "scores": {
                                 "user_id": tx["user_id"],
-                                "score": tx["comment"],
+                                "score": tx["score"],
                                 "timestamp": tx["timestamp"]
                             }
                         }
