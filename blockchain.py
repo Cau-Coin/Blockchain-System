@@ -2,72 +2,91 @@ from block import *
 from transaction import *
 from leader_adapter import *
 from node_adapter import *
+from genesis_block import *
 import pymongo
+import json
 
 
 class Blockchain:
-    def __init__(self, ip, port, db, chain_col, state_col, leader):
+    def __init__(self, ip, db, chain_col, state_col, leader):
         self.my_ip = ip
 
         # mongo db connection
-        self.client = pymongo.MongoClient(ip, port)
-        self.db = self.client.get_database(db)
+        self.client = pymongo.MongoClient(ip)
+        self.db = self.client[db]
 
         # block db
-        self.chain = self.db.get_collection(chain_col)
+        self.chain = self.db[chain_col]
 
         # state db
-        self.state = self.db.get_collection(state_col)
+        self.state = self.db[state_col]
 
         self.tx_list = []
         self.leader = leader
+        self.last_block = create_genesis_block(self.my_ip)
 
     def send_transaction(self):
         for tx in self.tx_list:
-            tx_json = tx.to_json()
-            send_tx_msg(tx_json, self.my_ip)
+            send_tx_msg(tx, self.my_ip)
 
         self.tx_list.clear()
 
     def save_transaction(self, tx):
         self.tx_list.append(tx)
 
+        if self.my_ip is self.leader:
+            if len(self.tx_list) == 5:
+                tx_list_to_block = self.tx_list[:5]
+                self.tx_list = self.tx_list[5:]
+                block = propose_block(self.last_block, tx_list_to_block, self.my_ip)
+                self.save_block(block)
+        else:
+            self.send_transaction()
+
     def save_block(self, block):
+        self.last_block = block
         self.chain.insert(block)
         self.update_state(block)
 
     def update_state(self, block):
         for tx in block.transactions:
-            if type(tx) == type(EvaluateTx):
-                json_data = tx.to_json
-                json.dumps(json_data)
-                json_data.push({
+            if tx["tx_type"] == "evaluate":
+                data = {
+                    "evaluate_id": tx["evaluate_id"],
+                    "user_id": tx["user_id"],
+                    "dept": tx["dept"],
+                    "grade": tx["grade"],
+                    "semester": tx["semester"],
+                    "subject": tx["subject"],
+                    "takeyear": tx["takeyear"],
+                    "evaluate": tx["evaluate"],
+                    "review": tx["review"],
+                    "timestamp": tx["timestamp"],
                     "comments": [],
                     "scores": []
-                })
-                self.state.insert(json_data)
-            elif type(tx) == type(CommentTx):
-                user_id = tx.tx_maker
-                evaluate_id = tx.evaluate_id
-                comment = tx.comment
+                }
+
+                self.state.insert(data)
+            elif tx["type"] == "comment":
                 self.state.update(
-                    {"evaluate_id": evaluate_id},
+                    {"evaluate_id": tx["evaluate_id"]},
                     {"comments.$push": {
-                        "user_id": user_id,
-                        "comment": comment
+                        "user_id": tx["user_id"],
+                        "comment": tx["comment"],
+                        "timestamp": tx["timestamp"]
                     }}
                 )
-            elif type(tx) == type(ScoreTx):
-                user_id = tx.tx_maker
-                evaluate_id = tx.evaluate_id
-                score = tx.score
+            elif tx["type"] == "score":
                 self.state.update(
-                    {"evaluate_id": evaluate_id},
+                    {"evaluate_id": tx["evaluate_id"]},
                     {"scores.$push": {
-                        "user_id": user_id,
-                        "score": score
+                        "user_id": tx["user_id"],
+                        "score": tx["comment"],
+                        "timestamp": tx["timestamp"]
                     }}
                 )
             else:
                 print("[Error] Not defined transaction!")
-                return
+
+    def update_leader(self, new_leader):
+        self.leader = new_leader

@@ -13,7 +13,7 @@ def handle_tx_request():
     blockchain = bc
 
     if request.method == "POST":
-        tx = receive_tx_request(request.json)
+        tx = receive_tx_request(bc.my_ip, request.json)
         if validate_tx(blockchain.state, tx):
             blockchain.save_transaction(tx)
         else:
