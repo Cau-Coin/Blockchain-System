@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def validate_tx(state_db, tx):
     return check_duplicated_eval(state_db, tx) and check_duplicated_score(state_db, tx)
 
@@ -31,9 +32,6 @@ def check_duplicated_score(state_db, tx):
         "evaluate_id": tx["evaluate_id"],
         "scores": {"$elemMatch": {"user_id": tx["user_id"]}}
     }).count()
-
-    for b in a:
-        print(b)
 
     if result == 0:
         return True

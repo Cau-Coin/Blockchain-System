@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 import json
 from flask import request, Blueprint
-from block import *
-from transaction import *
 import requests
+
+from blockchain_manager.transaction import tx_to_json, create_tx
 
 node_adapter = Blueprint('node_adapter', __name__)
 
@@ -15,7 +16,6 @@ def send_tx_msg(tx, ip):
 
 
 def accept_block(block):
-    print("Accept block - ", block)
     return block
 
 
@@ -27,5 +27,4 @@ def receive_next_leader(leader_data):
 
 def receive_tx_request(my_ip, json_input):
     tx = create_tx(my_ip, json_input)
-    print(tx)
     return tx

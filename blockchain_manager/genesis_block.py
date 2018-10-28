@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 import datetime as date
-from block import *
+
+from blockchain_manager.block import hash_block, new_block
 
 
-# Normally genesis block is JSON file
 def create_genesis_block(ip):
     index = 0
     timestamp = date.datetime.now()

@@ -1,10 +1,9 @@
-from block import *
-from transaction import *
-from leader_adapter import *
-from node_adapter import *
-from genesis_block import *
+# -*- coding: utf-8 -*-
 import pymongo
-import json
+
+from blockchain_manager.genesis_block import create_genesis_block
+from blockchain_manager.leader_adapter import propose_block
+from blockchain_manager.node_adapter import send_tx_msg
 
 
 class Blockchain:
@@ -12,7 +11,7 @@ class Blockchain:
         self.my_ip = ip
 
         # mongo db connection
-        self.client = pymongo.MongoClient(ip)
+        self.client = pymongo.MongoClient('0.0.0.0')
         self.db = self.client[db]
 
         # block db
