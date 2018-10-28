@@ -10,7 +10,7 @@ def check_duplicated_eval(state_db, tx):
     # (true 면 저장)
 
     result = state_db.find({
-        "user_id": tx["user_id"], "subject": tx["subject"]
+        "user_id": tx["user_id"], "evaluate_id": tx["evaluate_id"]
     }).count()
 
     if result == 0:
