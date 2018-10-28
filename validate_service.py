@@ -10,7 +10,7 @@ def check_duplicated_eval(state_db, tx):
     # (true 면 저장)
 
     result = state_db.find({
-        "tx_maker": tx.tx_maker, "subject": tx.subject
+        "user_id": tx["user_id"], "subject": tx["subject"]
     }).count()
 
     if result == 0:
@@ -27,8 +27,8 @@ def check_duplicated_score(state_db, tx):
     # (true 면 저장)
 
     result = state_db.find({
-        "scores": {"user_id": tx.tx_maker},
-        "evaluate_id": tx.evaluate_id
+        "scores": {"user_id": tx["user_id"]},
+        "evaluate_id": tx["evaluate_id"]
     }).count()
 
     if result == 0:
