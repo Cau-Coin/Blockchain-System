@@ -32,9 +32,6 @@ def check_duplicated_score(state_db, tx):
         "scores": {"$elemMatch": {"user_id": tx["user_id"]}}
     }).count()
 
-    for b in a:
-        print(b)
-
     if result == 0:
         return True
     else:

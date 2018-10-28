@@ -1,10 +1,8 @@
-from block import *
-from transaction import *
-from leader_adapter import *
-from node_adapter import *
-from genesis_block import *
 import pymongo
-import json
+
+from blockchain_manager.genesis_block import create_genesis_block
+from blockchain_manager.leader_adapter import propose_block
+from blockchain_manager.node_adapter import send_tx_msg
 
 
 class Blockchain:

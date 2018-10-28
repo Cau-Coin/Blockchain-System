@@ -1,8 +1,8 @@
 import json
 from flask import request, Blueprint
-from block import *
-from transaction import *
 import requests
+
+from blockchain_manager.transaction import tx_to_json, create_tx
 
 node_adapter = Blueprint('node_adapter', __name__)
 

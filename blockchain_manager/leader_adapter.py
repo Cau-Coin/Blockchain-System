@@ -1,8 +1,8 @@
 import requests
 from flask import request
 
-from block import *
-from transaction import *
+from blockchain_manager.block import create_block, block_to_json
+from blockchain_manager.transaction import json_to_tx
 
 
 def receive_tx_msg(json_data):
