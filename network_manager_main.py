@@ -9,8 +9,11 @@ from node_list import *
 app = Flask(__name__)
 
 ip_list = node_list
+
 leader = "115.68.207.11"
-data_manger = DataManager("0.0.0.0", "caucoin_db", "blocks", "states")
+my_ip = "115.68.207.11"
+
+data_manger = DataManager('0.0.0.0', "caucoin_db", "blocks", "states")
 
 
 @app.route("/write_transaction", methods=["POST"])
@@ -35,22 +38,38 @@ def read_one_data(evaluate_id):
 
 @app.route("/transaction", methods=["POST"])
 def send_tx():
-    pass
+    dst = "http://" + leader + ":4444/transaction"
+    data = request.json
+    requests.post(url=dst, json=data)
+    return ""
 
 
 @app.route("/transaction", methods=["POST"])
 def receive_tx():
-    pass
+    dst = "http://0.0.0.0:5303/transaction"
+    data = request.json
+    requests.post(url=dst, json=data)
+    return ""
 
 
 @app.route("/block", methods=["POST"])
 def broadcast_block():
-    pass
+    for node in node_list:
+        if node == my_ip:
+            continue
+        else:
+            dst = "http://" + node + ":4444/block"
+            data = request.json
+            requests.post(url=dst, json=data)
+    return ""
 
 
 @app.route("/block", methods=["POST"])
 def receive_block():
-    pass
+    dst = "http://0.0.0.0:5303/block"
+    data = request.json
+    requests.post(url=dst, json=data)
+    return ""
 
 
 @app.route("/leader_update", methods=["POST"])

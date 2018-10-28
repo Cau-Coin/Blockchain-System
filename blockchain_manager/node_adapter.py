@@ -16,7 +16,6 @@ def send_tx_msg(tx, ip):
 
 
 def accept_block(block):
-    print("Accept block - ", block)
     return block
 
 
@@ -28,5 +27,4 @@ def receive_next_leader(leader_data):
 
 def receive_tx_request(my_ip, json_input):
     tx = create_tx(my_ip, json_input)
-    print(tx)
     return tx

@@ -11,7 +11,7 @@ class Blockchain:
         self.my_ip = ip
 
         # mongo db connection
-        self.client = pymongo.MongoClient(ip)
+        self.client = pymongo.MongoClient('0.0.0.0')
         self.db = self.client[db]
 
         # block db

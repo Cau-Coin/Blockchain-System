@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
 from blockchain_manager.blockchain import Blockchain
+from network_manager_main import my_ip, leader
 
-bc = Blockchain('0.0.0.0', "caucoin_db", "blocks", "states", "0.0.0.0")
+bc = Blockchain(my_ip, "caucoin_db", "blocks", "states", leader)
