@@ -16,6 +16,7 @@ def check_duplicated_eval(state_db, tx):
     if result == 0:
         return True
     else:
+        print("Duplicated Evaluation!")
         return False
 
 
@@ -27,11 +28,15 @@ def check_duplicated_score(state_db, tx):
     # (true 면 저장)
 
     result = state_db.find({
-        "scores": {"user_id": tx["user_id"]},
-        "evaluate_id": tx["evaluate_id"]
+        "evaluate_id": tx["evaluate_id"],
+        "scores": {"$elemMatch": {"user_id": tx["user_id"]}}
     }).count()
+
+    for b in a:
+        print(b)
 
     if result == 0:
         return True
     else:
+        print("Duplicated Score!")
         return False
