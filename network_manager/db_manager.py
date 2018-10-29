@@ -18,6 +18,7 @@ class DataManager:
         result = self.state.find()
 
         for data in result:
+            del data["_id"]
             return_data["eval"].append(data)
 
         return return_data
