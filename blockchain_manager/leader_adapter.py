@@ -14,14 +14,19 @@ def receive_tx_msg(json_data):
 
 
 def propose_block(last_block, tx_list, my_address):
-    b = create_block(last_block, tx_list, my_address)
+    tx_limit_num = 3
+
+    if len(tx_list) < 3:
+        return None, 0
+
+    b = create_block(last_block, tx_list[:tx_limit_num], my_address)
     block_json = block_to_json(b)
 
     # b를 http 전송
     dst = "http://0.0.0.0:4444/block"
 
     requests.post(url=dst, json=block_json)
-    return b
+    return b, tx_limit_num
 
 
 def broadcast_next_leader(next_leader, my_address):
