@@ -52,8 +52,11 @@ class Blockchain:
             self.send_transaction()
 
     def batch_to_block(self):
-        timer = threading.Timer(30, self.check_to_save_block)
+        timer = threading.Timer(10, self.batch_to_block)
+
         print("Time out! Check to save block!")
+        self.check_to_save_block()
+
         timer.start()
 
     def save_block(self, block):
