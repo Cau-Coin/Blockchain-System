@@ -4,7 +4,7 @@ from flask import Blueprint, request
 from blockchain_manager.init_blockchain import bc
 from blockchain_manager.leader_adapter import receive_tx_msg
 from blockchain_manager.node_adapter import receive_tx_request, accept_block, receive_next_leader
-from blockchain_manager.validate_service import validate_tx
+from blockchain_manager.validate_service import *
 
 http_handler = Blueprint('http_handler', __name__)
 
