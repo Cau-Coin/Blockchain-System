@@ -8,11 +8,11 @@ from blockchain_manager.validate_service import *
 
 http_handler = Blueprint('http_handler', __name__)
 
+blockchain = bc
+
 
 @http_handler.route("/input", methods=["POST"])
 def handle_tx_request():
-    blockchain = bc
-
     if request.method == "POST":
         tx = receive_tx_request(bc.my_ip, request.json)
         if validate_tx(blockchain.state, tx):
@@ -27,8 +27,6 @@ def handle_tx_request():
 
 @http_handler.route("/transaction", methods=["POST"])
 def handle_tx():
-    blockchain = bc
-
     # http로 tx 받음
     if request.method == "POST":
         tx = receive_tx_msg(request.json)
@@ -41,8 +39,6 @@ def handle_tx():
 
 @http_handler.route("/block", methods=["POST"])
 def handle_proposed_block():
-    blockchain = bc
-
     # http로 리더에게 block 받음
     if request.method == "POST":
         block = accept_block(request.json)
@@ -55,13 +51,19 @@ def handle_proposed_block():
 
 @http_handler.route("/leader", methods=["POST"])
 def handle_leader_updated():
-    blockchain = bc
-
     # http로 새 리더 ip 받음
     if request.method == "POST":
         leader = receive_next_leader(request.data)
-        blockchain.update_leader(leader)
+        blockchain.update_leader(str(leader))
     else:
         print("[Error] Not defined request method!")
 
     return 'Handled leader updating'
+
+
+@http_handler.route("/timeout", methods=["POST"])
+def handle_timeout():
+    if request.method == "POST":
+        blockchain.save_timeout_tx()
+
+    return 'Handled timeout'

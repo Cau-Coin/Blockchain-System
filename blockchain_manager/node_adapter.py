@@ -10,7 +10,7 @@ node_adapter = Blueprint('node_adapter', __name__)
 
 def send_tx_msg(tx, ip):
     # http로 리더에게 tx 전송
-    dst = "http://" + ip + ":4444" + "/transaction"
+    dst = "http://" + ip + ":4444" + "/tx_delivery"
     tx_json = tx_to_json(tx)
     requests.post(url=dst, json=tx_json)
 
