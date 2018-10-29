@@ -4,6 +4,7 @@ from flask import request
 
 from blockchain_manager.block import create_block, block_to_json
 from blockchain_manager.transaction import json_to_tx
+from node_list import *
 
 
 def receive_tx_msg(json_data):
@@ -29,8 +30,10 @@ def propose_block(last_block, tx_list, my_address):
     return b, tx_limit_num
 
 
-def broadcast_next_leader(next_leader, my_address):
+def broadcast_next_leader():
     # http로 다음 리더 ip를 브로드캐스트
     dst = "http://0.0.0.0:4444/leader"
+    next_leader = get_one_node()
 
     requests.post(url=dst, data=next_leader)
+    return next_leader

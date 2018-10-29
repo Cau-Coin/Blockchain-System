@@ -4,7 +4,7 @@ import threading
 import pymongo
 
 from blockchain_manager.genesis_block import create_genesis_block
-from blockchain_manager.leader_adapter import propose_block
+from blockchain_manager.leader_adapter import propose_block, broadcast_next_leader
 from blockchain_manager.node_adapter import send_tx_msg
 
 
@@ -46,12 +46,14 @@ class Blockchain:
                 return
 
             self.save_block(block)
-            self.tx_list = self.tx_list[tx_num_to_remove]
+            self.tx_list = self.tx_list[tx_num_to_remove:]
+            self.update_leader(broadcast_next_leader())
         else:
             self.send_transaction()
 
     def batch_to_block(self):
         timer = threading.Timer(30, self.check_to_save_block)
+        print("Time out! Check to save block!")
         timer.start()
 
     def save_block(self, block):
