@@ -13,26 +13,25 @@ app = Flask(__name__)
 
 ip_list = node_list
 
-data_manger = DataManager('0.0.0.0', "caucoin_db", "blocks", "states")
+data_manager = DataManager('0.0.0.0', "caucoin_db", "blocks", "states", "coins")
 
 
 @app.route("/write_transaction", methods=["POST"])
 def receive_input():
     dst = "http://0.0.0.0:5303/input"
     data = request.json
-    requests.post(url=dst, json=data)
-    return "Delivering tx data is completed!"
+    return requests.post(url=dst, json=data)
 
 
 @app.route("/read_all_data", methods=["GET"])
 def read_all_data():
-    data = data_manger.get_all_data()
+    data = data_manager.get_all_data()
     return json.dumps(data)
 
 
 @app.route("/read_one_data/<evaluate_id>", methods=["GET"])
 def read_one_data(evaluate_id):
-    data = data_manger.get_one_data(evaluate_id)
+    data = data_manager.get_one_data(evaluate_id)
     return json.dumps(data)
 
 
@@ -40,16 +39,14 @@ def read_one_data(evaluate_id):
 def send_tx():
     dst = "http://" + leader + ":4444/tx_receive"
     data = request.json
-    requests.post(url=dst, json=data)
-    return ""
+    return requests.post(url=dst, json=data)
 
 
 @app.route("/tx_receive", methods=["POST"])
 def receive_tx():
     dst = "http://0.0.0.0:5303/transaction"
     data = request.json
-    requests.post(url=dst, json=data)
-    return ""
+    return requests.post(url=dst, json=data)
 
 
 @app.route("/block_delivery", methods=["POST"])
@@ -61,15 +58,14 @@ def broadcast_block():
             dst = "http://" + node + ":4444/block_receive"
             data = request.json
             requests.post(url=dst, json=data)
-    return ""
+    return "Broadcasting a block is finished"
 
 
 @app.route("/block_receive", methods=["POST"])
 def receive_block():
     dst = "http://0.0.0.0:5303/block"
     data = request.json
-    requests.post(url=dst, json=data)
-    return ""
+    return requests.post(url=dst, json=data)
 
 
 @app.route("/leader_delivery", methods=["POST"])
@@ -81,15 +77,20 @@ def broadcast_leader():
             dst = "http://" + node + ":4444/leader_receive"
             data = request.data
             requests.post(url=dst, data=data)
-    return ""
+    return "Broadcasting new leader is finished"
 
 
 @app.route("/leader_receive", methods=["POST"])
 def receive_leader():
     dst = "http://0.0.0.0:5303/leader"
     data = request.data
-    requests.post(url=dst, data=data)
-    return ""
+    return requests.post(url=dst, data=data)
+
+
+@app.route("/coin/<user_id>", methods=["GET"])
+def read_coin_data(user_id):
+    data = data_manager.get_coin_data(user_id)
+    return json.dumps(data)
 
 
 def send_time_out():
@@ -108,5 +109,3 @@ def timer_check():
 if __name__ == '__main__':
     timer_check()
     app.run(host='0.0.0.0', port=4444)
-
-
