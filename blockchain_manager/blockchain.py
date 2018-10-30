@@ -8,7 +8,7 @@ from node_info import tx_limit_num
 
 
 class Blockchain:
-    def __init__(self, ip, db, chain_col, state_col, leader):
+    def __init__(self, ip, db, chain_col, state_col, coin_col, leader):
         self.my_ip = ip
         print("My ip - ", self.my_ip)
 
@@ -21,6 +21,9 @@ class Blockchain:
 
         # state db
         self.state = self.db[state_col]
+
+        # coin db
+        self.coin = self.db[coin_col]
 
         self.tx_list = []
 
@@ -64,6 +67,7 @@ class Blockchain:
         self.last_block = block
         self.chain.insert(block)
         self.update_state(block)
+        self.update_coin(block)
 
     def update_state(self, block):
         for tx in block["transactions"]:
@@ -112,6 +116,37 @@ class Blockchain:
                 )
             else:
                 print("[Error] Not defined transaction!")
+
+    def update_coin(self, block):
+        for tx in block["transactions"]:
+            user_id = tx["user_id"]
+            result = self.coin.find_one({"user_id": user_id})
+
+            coin = 0
+
+            if self.coin.count_documents({"user_id": user_id}) == 1:
+                coin = result["coin"]
+
+            if tx["type"] == "evaluate":
+                self.coin.update(
+                    {"user_id": user_id},
+                    {"$inc": {"coin": 7}},
+                    upsert=True
+                )
+            elif tx["type"] == "comment":
+                self.coin.update(
+                    {"user_id": user_id},
+                    {"$inc": {"coin": 0.1}},
+                    upsert=True
+                )
+            elif tx["type"] == "score":
+                self.coin.update(
+                    {"user_id": user_id},
+                    {"$inc": {"coin": 0.5}},
+                    upsert=True
+                )
+            else:
+                print("[Error] Not matched tx type in coin result!")
 
     def update_leader(self, new_leader):
         self.leader = new_leader
