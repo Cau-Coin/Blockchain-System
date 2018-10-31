@@ -130,19 +130,19 @@ class Blockchain:
             if tx["type"] == "evaluate":
                 self.coin.update(
                     {"user_id": user_id},
-                    {"$inc": {"coin": 7}},
+                    {"$inc": {"coin": 70}},
                     upsert=True
                 )
             elif tx["type"] == "comment":
                 self.coin.update(
                     {"user_id": user_id},
-                    {"$inc": {"coin": 0.1}},
+                    {"$inc": {"coin": 1}},
                     upsert=True
                 )
             elif tx["type"] == "score":
                 self.coin.update(
                     {"user_id": user_id},
-                    {"$inc": {"coin": 0.5}},
+                    {"$inc": {"coin": 5}},
                     upsert=True
                 )
             else:
