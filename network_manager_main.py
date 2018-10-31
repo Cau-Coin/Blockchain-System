@@ -20,7 +20,8 @@ data_manager = DataManager('0.0.0.0', "caucoin_db", "blocks", "states", "coins")
 def receive_input():
     dst = "http://0.0.0.0:5303/input"
     data = request.json
-    return requests.post(url=dst, json=data)
+    requests.post(url=dst, json=data)
+    return "Write tx is delivered"
 
 
 @app.route("/read_all_data", methods=["GET"])
@@ -39,14 +40,16 @@ def read_one_data(evaluate_id):
 def send_tx():
     dst = "http://" + leader + ":4444/tx_receive"
     data = request.json
-    return requests.post(url=dst, json=data)
+    requests.post(url=dst, json=data)
+    return ""
 
 
 @app.route("/tx_receive", methods=["POST"])
 def receive_tx():
     dst = "http://0.0.0.0:5303/transaction"
     data = request.json
-    return requests.post(url=dst, json=data)
+    requests.post(url=dst, json=data)
+    return ""
 
 
 @app.route("/block_delivery", methods=["POST"])
@@ -65,7 +68,8 @@ def broadcast_block():
 def receive_block():
     dst = "http://0.0.0.0:5303/block"
     data = request.json
-    return requests.post(url=dst, json=data)
+    requests.post(url=dst, json=data)
+    return ""
 
 
 @app.route("/leader_delivery", methods=["POST"])
@@ -84,7 +88,8 @@ def broadcast_leader():
 def receive_leader():
     dst = "http://0.0.0.0:5303/leader"
     data = request.data
-    return requests.post(url=dst, data=data)
+    requests.post(url=dst, data=data)
+    return ""
 
 
 @app.route("/coin/<user_id>", methods=["GET"])
