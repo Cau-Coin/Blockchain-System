@@ -36,7 +36,7 @@ class Blockchain:
         for tx in self.tx_list:
             send_tx_msg(tx, self.my_ip)
 
-        self.tx_list.clear()
+        self.tx_list = []
 
     def save_transaction(self, tx):
         self.tx_list.append(tx)
@@ -47,7 +47,7 @@ class Blockchain:
                 block = propose_block(self.last_block, tx_list_to_block, self.my_ip)
                 self.tx_list = self.tx_list[tx_limit_num:]
                 self.save_block(block)
-                self.update_leader(broadcast_next_leader())
+                #self.update_leader(broadcast_next_leader())
         else:
             self.send_transaction()
 
@@ -59,7 +59,7 @@ class Blockchain:
                 block = propose_block(self.last_block, tx_list_to_block, self.my_ip)
                 self.tx_list = self.tx_list[tx_limit_num:]
                 self.save_block(block)
-                self.update_leader(broadcast_next_leader())
+                #self.update_leader(broadcast_next_leader())
         else:
             self.send_transaction()
 
@@ -151,3 +151,19 @@ class Blockchain:
     def update_leader(self, new_leader):
         self.leader = new_leader
         print("New Leader - ", self.leader)
+
+    def read_data(self, user_id):
+        coin = 0
+
+        if self.coin.count_documents({"user_id": user_id}) != 0:
+            coin = self.coin.find_one({"user_id": user_id})["coin"]
+
+        if coin < 10:
+            return False
+
+        self.coin.update(
+            {"user_id": user_id},
+            {"$inc": {"coin": -10}},
+            upsert=True
+        )
+        return True

@@ -6,12 +6,14 @@ from flask import Flask, request
 import json
 import requests
 
+from blockchain_manager.init_blockchain import bc
 from network_manager.db_manager import DataManager
 from node_info import *
 
 app = Flask(__name__)
 
 ip_list = node_list
+blockchain = bc
 
 data_manager = DataManager('0.0.0.0', "caucoin_db", "blocks", "states", "coins")
 
@@ -36,9 +38,24 @@ def read_one_data(evaluate_id):
     return json.dumps(data)
 
 
+@app.route("/read_one_data/<evaluate_id>/<user_id>", methods=["GET"])
+def read_one_data_by_user(evaluate_id, user_id):
+    dst = "http://0.0.0.0:5303/read_data"
+    data = user_id
+    res = requests.post(url=dst, data=data)
+    result = res.content.decode()
+
+    if result == "True":
+        data = data_manager.get_one_data(evaluate_id)
+    else:
+        data = {"eval": "False"}
+
+    return json.dumps(data)
+
+
 @app.route("/tx_delivery", methods=["POST"])
 def send_tx():
-    dst = "http://" + leader + ":4444/tx_receive"
+    dst = "http://" + blockchain.leader + ":4444/tx_receive"
     data = request.json
     requests.post(url=dst, json=data)
     return ""
@@ -100,8 +117,7 @@ def read_coin_data(user_id):
 
 def send_time_out():
     dst = "http://0.0.0.0:5303/timeout"
-    data = "timeout"
-    requests.post(url=dst, data=data)
+    requests.get(url=dst)
 
 
 def timer_check():

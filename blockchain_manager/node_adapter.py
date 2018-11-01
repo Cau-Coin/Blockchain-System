@@ -16,7 +16,8 @@ def send_tx_msg(tx, ip):
 
 
 def accept_block(block):
-    return block
+    block_data = json.loads(block)
+    return block_data
 
 
 def receive_next_leader(leader_data):
