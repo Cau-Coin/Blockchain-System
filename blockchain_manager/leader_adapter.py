@@ -10,7 +10,6 @@ from node_info import get_one_node
 def receive_tx_msg(json_data):
     # http로 tx 받음
     tx = json_to_tx(json_data)
-    print("Receive tx msg - ", tx)
     return tx
 
 

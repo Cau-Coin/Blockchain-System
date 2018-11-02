@@ -73,9 +73,16 @@ def handle_leader_updated():
     return r
 
 
-@http_handler.route("/timeout", methods=["POST"])
+@http_handler.route("/timeout", methods=["GET"])
 def handle_timeout():
-    if request.method == "POST":
-        blockchain.save_timeout_tx()
-
+    blockchain.save_timeout_tx()
     return 'Handled timeout'
+
+
+@http_handler.route("/read_data", methods=["POST"])
+def handle_read_data():
+    user_id = str(request.data.decode())
+    if blockchain.read_data(user_id):
+        return "True"
+
+    return "False"
