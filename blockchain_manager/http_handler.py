@@ -33,11 +33,8 @@ def handle_tx():
     r = "Handled tx"
 
     # http로 tx 받음
-    if request.method == "POST":
-        tx = receive_tx_msg(request.json)
-        blockchain.save_transaction(tx)
-    else:
-        r = "[Error] Not defined request method!"
+    tx = receive_tx_msg(request.json)
+    blockchain.save_transaction(tx)
 
     print(r)
     return r
@@ -48,11 +45,8 @@ def handle_proposed_block():
     r = "Handled proposed block"
 
     # http로 리더에게 block 받음
-    if request.method == "POST":
-        block = accept_block(request.json)
-        blockchain.save_block(block)
-    else:
-        r = "[Error] Not defined request method!"
+    block = accept_block(request.json)
+    blockchain.save_block(block)
 
     print(r)
     return r
@@ -63,11 +57,8 @@ def handle_leader_updated():
     r = "Handled leader updating"
 
     # http로 새 리더 ip 받음
-    if request.method == "POST":
-        leader = receive_next_leader(request.data)
-        blockchain.update_leader(str(leader))
-    else:
-        r = "[Error] Not defined request method!"
+    leader = receive_next_leader(request.data)
+    blockchain.update_leader(str(leader))
 
     print(r)
     return r

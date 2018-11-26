@@ -72,12 +72,9 @@ def receive_tx():
 @app.route("/block_delivery", methods=["POST"])
 def broadcast_block():
     for node in node_list:
-        if node == my_ip:
-            continue
-        else:
-            dst = "http://" + node + ":4444/block_receive"
-            data = request.json
-            requests.post(url=dst, json=data)
+        dst = "http://" + node + ":4444/block_receive"
+        data = request.json
+        requests.post(url=dst, json=data)
     return "Broadcasting a block is finished"
 
 
@@ -92,12 +89,9 @@ def receive_block():
 @app.route("/leader_delivery", methods=["POST"])
 def broadcast_leader():
     for node in node_list:
-        if node == my_ip:
-            continue
-        else:
-            dst = "http://" + node + ":4444/leader_receive"
-            data = request.data
-            requests.post(url=dst, data=data)
+        dst = "http://" + node + ":4444/leader_receive"
+        data = request.data
+        requests.post(url=dst, data=data)
     return "Broadcasting new leader is finished"
 
 
@@ -116,8 +110,13 @@ def read_coin_data(user_id):
 
 
 def send_time_out():
-    dst = "http://0.0.0.0:5303/timeout"
-    requests.get(url=dst)
+    for node in node_list:
+        dst = "http://"+node+":5303/timeout"
+
+        if node == my_ip:
+            dst = "http://0.0.0.0:5303/timeout"
+
+        requests.get(url=dst)
 
 
 def timer_check():
