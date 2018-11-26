@@ -47,7 +47,6 @@ class Blockchain:
                 block = propose_block(self.last_block, tx_list_to_block, self.my_ip)
                 self.tx_list = self.tx_list[tx_limit_num:]
                 self.save_block(block)
-                #self.update_leader(broadcast_next_leader())
         else:
             self.send_transaction()
 
@@ -59,7 +58,6 @@ class Blockchain:
                 block = propose_block(self.last_block, tx_list_to_block, self.my_ip)
                 self.tx_list = self.tx_list[tx_limit_num:]
                 self.save_block(block)
-                #self.update_leader(broadcast_next_leader())
         else:
             self.send_transaction()
 
@@ -68,6 +66,8 @@ class Blockchain:
         self.chain.insert(block)
         self.update_state(block)
         self.update_coin(block)
+        l = broadcast_next_leader()
+        self.update_leader(l)
 
     def update_state(self, block):
         for tx in block["transactions"]:
