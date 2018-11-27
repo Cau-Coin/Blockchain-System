@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+import threading
+
 import pymongo
 
 from blockchain_manager.genesis_block import create_genesis_block
 from blockchain_manager.leader_adapter import propose_block, broadcast_next_leader
 from blockchain_manager.node_adapter import send_tx_msg
-from node_info import tx_limit_num
+from node_info import tx_limit_num, tx_limit_time
 
 
 class Blockchain:
@@ -33,25 +35,28 @@ class Blockchain:
         self.last_block = create_genesis_block(self.my_ip)
 
     def send_transaction(self):
-        for tx in self.tx_list:
-            send_tx_msg(tx, self.my_ip)
+        tx_data = self.tx_list
 
         self.tx_list = []
+
+        for tx in tx_data:
+            send_tx_msg(tx, self.my_ip)
 
     def save_transaction(self, tx):
         self.tx_list.append(tx)
 
-        if self.my_ip is self.leader:
+        if self.my_ip == self.leader:
             if len(self.tx_list) >= tx_limit_num:
                 propose_block(self.last_block, self.tx_list, self.my_ip)
                 self.tx_list = []
                 broadcast_next_leader()
         else:
+            print("MY IP IS", self.my_ip, " | LEADER IP IS", self.leader)
             self.send_transaction()
             print(len(self.tx_list))
 
     def save_timeout_tx(self):
-        if self.my_ip is self.leader:
+        if self.my_ip == self.leader:
             print("The number of tx list : ", len(self.tx_list))
             if len(self.tx_list) > 0:
                 propose_block(self.last_block, self.tx_list, self.my_ip)
@@ -165,3 +170,11 @@ class Blockchain:
             upsert=True
         )
         return True
+
+    def timer_checker(self):
+        timer = threading.Timer(tx_limit_time, self.timer_checker)
+
+        if self.my_ip == self.leader:
+            self.save_timeout_tx()
+
+        timer.start()

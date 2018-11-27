@@ -40,7 +40,7 @@ def handle_tx():
     # http로 tx 받음
     tx = receive_tx_msg(request.json)
 
-    t=threading.Thread(target=blockchain.save_transaction, args=(tx,))
+    t = threading.Thread(target=blockchain.save_transaction, args=(tx,))
     t.start()
 
     # blockchain.save_transaction(tx)

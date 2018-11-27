@@ -122,7 +122,6 @@ def send_time_out():
 
 
 def timer_check():
-    time.sleep(2)
     timer = threading.Timer(tx_limit_time, timer_check)
     send_time_out()
     timer.start()
