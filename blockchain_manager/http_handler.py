@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import threading
+
 from flask import Blueprint, request
 
 from blockchain_manager.init_blockchain import bc
@@ -18,7 +20,10 @@ def handle_tx_request():
     if request.method == "POST":
         tx = receive_tx_request(bc.my_ip, request.json)
         if validate_tx(blockchain.state, tx):
-            blockchain.save_transaction(tx)
+            t = threading.Thread(target=blockchain.save_transaction, args=(tx,))
+            t.start()
+
+            # blockchain.save_transaction(tx)
         else:
             r = "[Error] Validating is failed!"
     else:
@@ -34,7 +39,11 @@ def handle_tx():
 
     # http로 tx 받음
     tx = receive_tx_msg(request.json)
-    blockchain.save_transaction(tx)
+
+    t=threading.Thread(target=blockchain.save_transaction, args=(tx,))
+    t.start()
+
+    # blockchain.save_transaction(tx)
 
     print(r)
     return r
@@ -46,7 +55,11 @@ def handle_proposed_block():
 
     # http로 리더에게 block 받음
     block = accept_block(request.json)
-    blockchain.save_block(block)
+
+    t = threading.Thread(target=blockchain.save_block, args=(block,))
+    t.start()
+
+    # blockchain.save_block(block)
 
     print(r)
     return r
@@ -66,7 +79,10 @@ def handle_leader_updated():
 
 @http_handler.route("/timeout", methods=["GET"])
 def handle_timeout():
-    blockchain.save_timeout_tx()
+    t = threading.Thread(target=blockchain.save_timeout_tx)
+    t.start()
+
+    # blockchain.save_timeout_tx()
     return 'Handled timeout'
 
 

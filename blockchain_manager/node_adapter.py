@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
+import threading
+
 from flask import request, Blueprint
 import requests
 
@@ -12,7 +14,9 @@ def send_tx_msg(tx, ip):
     # http로 리더에게 tx 전송
     dst = "http://" + ip + ":4444" + "/tx_delivery"
     tx_json = tx_to_json(tx)
-    requests.post(url=dst, json=tx_json)
+    t = threading.Thread(target=_send_tx_msg, args=(dst, tx_json,))
+    t.start()
+    # requests.post(url=dst, json=tx_json)
 
 
 def accept_block(block):
@@ -29,3 +33,7 @@ def receive_next_leader(leader_data):
 def receive_tx_request(my_ip, json_input):
     tx = create_tx(my_ip, json_input)
     return tx
+
+
+def _send_tx_msg(dst, tx_json):
+    requests.post(url=dst, json=tx_json)

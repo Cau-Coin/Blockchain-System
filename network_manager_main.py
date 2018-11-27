@@ -99,6 +99,8 @@ def broadcast_leader():
 def receive_leader():
     dst = "http://0.0.0.0:5303/leader"
     data = request.data
+    l_data = data.decode('utf-8')
+    blockchain.update_leader(str(l_data))
     requests.post(url=dst, data=data)
     return ""
 

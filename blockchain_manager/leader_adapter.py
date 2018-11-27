@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import threading
+
 import requests
 from flask import request
 
@@ -21,7 +23,6 @@ def propose_block(last_block, tx_list, my_address):
     dst = "http://0.0.0.0:4444/block_delivery"
 
     requests.post(url=dst, json=block_json)
-    return b
 
 
 def broadcast_next_leader():
@@ -29,5 +30,11 @@ def broadcast_next_leader():
     dst = "http://0.0.0.0:4444/leader_delivery"
     next_leader = get_one_node()
 
-    requests.post(url=dst, data=next_leader)
-    return next_leader
+    t=threading.Thread(target=_requests_post, args=(dst,next_leader,))
+    t.start()
+
+    # requests.post(url=dst, data=next_leader)
+
+
+def _requests_post(dst, data):
+    requests.post(url=dst, data=data)

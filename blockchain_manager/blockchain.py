@@ -43,21 +43,23 @@ class Blockchain:
 
         if self.my_ip is self.leader:
             if len(self.tx_list) >= tx_limit_num:
-                block = propose_block(self.last_block, self.tx_list, self.my_ip)
+                propose_block(self.last_block, self.tx_list, self.my_ip)
                 self.tx_list = []
                 broadcast_next_leader()
         else:
             self.send_transaction()
+            print(len(self.tx_list))
 
     def save_timeout_tx(self):
         if self.my_ip is self.leader:
             print("The number of tx list : ", len(self.tx_list))
             if len(self.tx_list) > 0:
-                block = propose_block(self.last_block, self.tx_list, self.my_ip)
+                propose_block(self.last_block, self.tx_list, self.my_ip)
                 self.tx_list = []
                 broadcast_next_leader()
         else:
             self.send_transaction()
+            print(len(self.tx_list))
 
     def save_block(self, block):
         self.last_block = block
